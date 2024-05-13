@@ -6,9 +6,9 @@ Person class represents a person who will request and get on lifts.
 class Person:
     def __init__(self, startingLevel: int):
         self.level = startingLevel
-        self.onLift = None or Lift
+        self.onLift = None
         self.myDestination = None
-    
+
     def pressLevel(self, destination: int):
         if (self.onLift != None):
             self.onLift.addDestination(destination)
@@ -19,6 +19,7 @@ class Person:
         if (self.onLift != None):
             if (self.onLift.getLevel == self.myDestination):
                 self.onLift.leaveLift(self)
+                print("I left eleavtor")
 
 '''
 Lift object represents a singular lift which can exist within a lift area. Lifts will be instructed where to go by the lift manager
@@ -44,7 +45,7 @@ class Lift:
         else:
             self.peopleOnboard.append(person)
 
-    def addDestination(self, goToLevel: int):
+    def requestLift(self, goToLevel: int):
         self.liftq.append(goToLevel)
         self.goToLevel()
     
@@ -67,35 +68,42 @@ class Lift:
 
     def leaveLift(self, person: Person):
         self.peopleOnboard.remove(person)
+    
+
+    # Function to be moved later
+    def getOnLift(self, person: Person):
+        if (self.currentLevel == person.level):
+            # attempt to add person to lift
+            self.addPerson(person)
 
 '''
 LiftManager object reprents an area that contains one or more lifts. This is essential, because it manager for scheduling lifts to floors.   
 '''
-class LiftManager:
-    def __init__(self, numLevels: int, lifts: list[Lift]):
-        self.numLevels = numLevels
-        self.lifts = lifts
+# class LiftManager:
+#     def __init__(self, numLevels: int, lifts: list[Lift]):
+#         self.numLevels = numLevels
+#         self.lifts = lifts
 
-    # take requests handle all new requests for a lift to a level
-    def takeRequest(self, level):
-        # take the first lift from list of lists
-        lift = self.lifts[0]
+#     # take requests handle all new requests for a lift to a level
+#     def takeRequest(self, level):
+#         # take the first lift from list of lists
+#         lift = self.lifts
 
-        # move it to a level
-        lift.setLevel(level)
+#         # move it to a level
+#         lift.setLevel(level)
 
-    def getOnLift(self, person: Person):
-        lift = self.lifts[0]
+#     def getOnLift(self, person: Person):
+#         lift = self.lifts[0]
 
-        if (lift.currentLevel == person.level):
-            # attempt to add person to lift
-            lift.addPerson(person)
+#         if (lift.currentLevel == person.level):
+#             # attempt to add person to lift
+#             lift.addPerson(person)
 
 
 if __name__ == "__main__":
     # create a lift shaft that has 10 levels
     lift1: Lift =  Lift()
-    liftManager: LiftManager = LiftManager(10, lift1)
+    # liftManager: LiftManager = LiftManager(10, lift1)
 
     # someone requests a lift from level 1
     # create people
@@ -105,10 +113,14 @@ if __name__ == "__main__":
     person4: Person = Person(4)
 
     # person1 requests a lift
-    liftManager.takeRequest(person1.level)
+    lift1.requestLift(1)
+    lift1.getOnLift(person1)
+    
+
+    
 
     # person1 gets on lift
-    liftManager.getOnLift(person1)
+    # liftManager.getOnLift(person1)
 
     # someone gets on a lift, and requests to go to level 2
 
